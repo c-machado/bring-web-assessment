@@ -10,6 +10,6 @@ Feature: As a user I want to be able to create and edit a ticket reservation,
 
 
     Examples:
-    |departure | destination    | depart     | return     |
-    |Lisbon    | Paris Beauvais | 2021-06-08 | 2021-12-08 |
+    |departure | destination    | depart      | return          |
+    |Lisbon    | Paris Beauvais | June 6 2021 | October 30 2021 |
 

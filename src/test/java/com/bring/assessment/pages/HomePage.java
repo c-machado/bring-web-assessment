@@ -4,10 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -19,8 +17,7 @@ public class HomePage {
     private WebDriver driver;
     private String headingFlights = "FLIGHTS";
 
-    @FindBy(css = ".tab-text")
-    public WebElement headingHomeFlights;
+
 
     @FindBy(css = "button[data-ref='cookie.accept-all']")
     public WebElement accept_cookie_policy;
@@ -33,6 +30,12 @@ public class HomePage {
 
     @FindBy(css = ".datepicker__calendars calendar:nth-of-type(2)")
     public WebElement depart_calendar;
+
+    @FindBy(css = ".tab-text")
+    public WebElement headingHomeFlights;
+
+
+
 
     public HomePage(WebDriver _driver){
         this.driver = _driver;
@@ -51,51 +54,58 @@ public class HomePage {
         accept_cookie_policy.click();
     }
 
-    public void enterDepartureAndDestination(String _departure, String _destination){
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Actions action = new Actions(driver);
-        int len_depart_text = departure.getText().length();
-        System.out.println("TEXTXXXXX "+departure.getAttribute("innerHTML"));
-        System.out.println("TEXTXXXXX "+departure.getAttribute("placeholder"));
-        System.out.println("LENGTHHHHHHHHH "+len_depart_text);
+    public void enterDepartureAndDestination(String _departure, String _destination) throws InterruptedException {
+        int len_depart_text = departure.getAttribute("value").length();
         for(int i = 0; i<len_depart_text; i++){
-            action.sendKeys(Keys.ARROW_LEFT);
+            departure.sendKeys(Keys.BACK_SPACE);
         }
-        action.build().perform();
-        for(int i = 0; i < len_depart_text; i++){
-            action.sendKeys(Keys.DELETE);
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        action.build().perform();
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        WebDriverWait wait_departure_empty= new WebDriverWait(driver, 10);
+        wait_departure_empty.until(ExpectedConditions.textToBePresentInElement(departure,""));
         departure.sendKeys(_departure);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         destination.sendKeys(_destination);
+        WebDriverWait wait_destination_not_empty= new WebDriverWait(driver, 20);
+        wait_destination_not_empty.until(ExpectedConditions.attributeToBeNotEmpty(destination,"value"));
+        getAirportByName(_destination).click();
+    }
+
+    public WebElement getAirportByName(String _airportName){
+        List<WebElement> airports = driver.findElements(By.xpath("//span[@data-ref='airport-item__name']"));
+        for(WebElement airportElement: airports){
+            System.out.println("element "+airportElement.getText());
+            if (airportElement.getText().equals(_airportName));
+            {
+                return airportElement;
+            }
+        }
+        return null;
     }
 
     public void enterDepartAndReturnDates(String _depart_date, String _return_date){
-        WebDriverWait waitUntilCalendarIsVisible = new WebDriverWait(driver, 10);
-        waitUntilCalendarIsVisible.until(ExpectedConditions.visibilityOf(depart_calendar));
-        List<WebElement> cols = depart_calendar.findElements(By.tagName("div"));
-        for (WebElement cell: cols){
-            System.out.println(cell.getText());
+        WebElement departure_calendar = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(2)"));
+        WebDriverWait wait_until_calendar_is_visible = new WebDriverWait(driver, 10);
+        wait_until_calendar_is_visible.until(ExpectedConditions.visibilityOf(departure_calendar));
+        selectDate(_depart_date);
+    }
+
+    public void selectDate(String date){
+        WebElement calendar = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(2)"));
+        String[] arrDate = date.split(" ");
+        String month = arrDate[0];
+        String day = arrDate[1].trim();
+        String year = arrDate[2];
+        WebElement month_name = driver.findElement(By.cssSelector(".calendar__month-name"));
+        String month_date = month.concat(year);
+        System.out.println("month date " + month_date);
+        if (month_name.getText().equals(month_date))
+            calendar.findElement(By.cssSelector("[data-value='" + day +"']")).click();
+        else {
+            //driver.findElement(By.cssSelector(".datepicker__arrow-wrap")).click();
+            selectDate(date);
         }
     }
+
+
+
+
+
 }

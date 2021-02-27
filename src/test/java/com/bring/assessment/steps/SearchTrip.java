@@ -37,7 +37,7 @@ public class SearchTrip {
     }
 
     @When("^the user chooses \"([^\"]*)\" and \"([^\"]*)\" to travel$")
-    public void theUserChoosesAndToTravel(String departure, String destination) {
+    public void theUserChoosesAndToTravel(String departure, String destination) throws InterruptedException {
         homePage.enterDepartureAndDestination(departure, destination);
     }
 
