@@ -13,6 +13,17 @@ public class HomePage {
     @FindBy(css = ".tab-text")
     public WebElement headingHomeFlights;
 
+    @FindBy(css = "button[data-ref='cookie.accept-all']")
+    public WebElement accept_cookie_policy;
+
+    @FindBy(id = "input-button__departure")
+    public WebElement departure;
+
+    @FindBy(id = "input-button__destination")
+    public WebElement destination;
+
+    
+
     public HomePage(WebDriver _driver){
         this.driver = _driver;
         PageFactory.initElements(_driver, this);
@@ -24,5 +35,14 @@ public class HomePage {
      */
     public boolean isPageOpen() {
         return headingHomeFlights.getText().contains(headingFlights);
+    }
+
+    public void clickAcceptCookiePolicy(){
+        accept_cookie_policy.click();
+    }
+
+    public void enterDepartureAndDestination(String _departure, String _destination){
+        departure.sendKeys(_departure);
+        destination.sendKeys(_destination);
     }
 }
