@@ -2,11 +2,11 @@ package com.bring.assessment.steps;
 
 import com.bring.assessment.consts.Constants;
 import com.bring.assessment.pages.*;
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,6 +18,7 @@ public class SearchTrip {
 
     private WebDriver driver;
     private HomePage homePage;
+    private FlightFareDetails fareDetails;
 
     @Before
     public void setUp() {
@@ -46,10 +47,29 @@ public class SearchTrip {
         homePage.enterDepartAndReturnDates(depart_date, return_date);
     }
 
+    @And("^the user chooses the number of \"([^\"]*)\" and \"([^\"]*)\" passengers$")
+    public void theUserChoosesTheNumberOfAndPassengers(String adults, String children) throws Throwable {
+        homePage.selectNumberOfPassengers(Integer.parseInt(adults), "adults");
+        homePage.selectNumberOfPassengers(Integer.parseInt(children), "children");
+        homePage.confirmNumberOfPassengers();
+    }
+
     @After
     public void close(){
         driver.close();
     }
 
 
+    @And("^the user performs the Search$")
+    public void theUserClicksOnTheSearchCTA() {
+        homePage.selectTermOfUse();
+        homePage.clickToSearchFlights();
+    }
+
+    @Then("^the user selects the value fare card$")
+    public void theUserSelectsTheValueFareCard() {
+        fareDetails = new FlightFareDetails(driver);
+        fareDetails.selectOutboundFare();
+        fareDetails.selectInboundFare();
+    }
 }

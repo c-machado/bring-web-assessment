@@ -18,7 +18,6 @@ public class HomePage {
     private String headingFlights = "FLIGHTS";
 
 
-
     @FindBy(css = "button[data-ref='cookie.accept-all']")
     public WebElement accept_cookie_policy;
 
@@ -28,14 +27,11 @@ public class HomePage {
     @FindBy(id = "input-button__destination")
     public WebElement destination;
 
-    @FindBy(css = ".datepicker__calendars calendar:nth-of-type(2)")
-    public WebElement depart_calendar;
-
     @FindBy(css = ".tab-text")
     public WebElement headingHomeFlights;
 
-
-
+    @FindBy(css = "button[aria-label='Search']")
+    public WebElement searchCTA;
 
     public HomePage(WebDriver _driver){
         this.driver = _driver;
@@ -59,12 +55,17 @@ public class HomePage {
         for(int i = 0; i<len_depart_text; i++){
             departure.sendKeys(Keys.BACK_SPACE);
         }
+        departure.sendKeys("");
         WebDriverWait wait_departure_empty= new WebDriverWait(driver, 10);
-        wait_departure_empty.until(ExpectedConditions.textToBePresentInElement(departure,""));
+        wait_departure_empty.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#ry-tooltip-1"), 1));
+        departure.clear();
         departure.sendKeys(_departure);
+
+        destination.sendKeys("");
+        WebDriverWait waitForSpinner= new WebDriverWait(driver, 10);
+        waitForSpinner.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#ry-tooltip-2"), 1));
+        destination.clear();
         destination.sendKeys(_destination);
-        WebDriverWait wait_destination_not_empty= new WebDriverWait(driver, 20);
-        wait_destination_not_empty.until(ExpectedConditions.attributeToBeNotEmpty(destination,"value"));
         getAirportByName(_destination).click();
     }
 
@@ -80,31 +81,53 @@ public class HomePage {
         return null;
     }
 
-    public void enterDepartAndReturnDates(String _depart_date, String _return_date){
+    public void enterDepartAndReturnDates(String _depart_date, String _return_date) {
         WebElement departure_calendar = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(2)"));
         WebDriverWait wait_until_calendar_is_visible = new WebDriverWait(driver, 10);
         wait_until_calendar_is_visible.until(ExpectedConditions.visibilityOf(departure_calendar));
-        selectDate(_depart_date);
+        WebElement calendar_depart = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(1)"));
+        selectDate(_depart_date, calendar_depart);
+        WebElement calendar_return = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(2)"));
+        selectDate(_return_date, calendar_return);
     }
 
-    public void selectDate(String date){
-        WebElement calendar = driver.findElement(By.cssSelector(".datepicker__calendars calendar:nth-of-type(2)"));
+    public void selectDate(String date, WebElement calendar)  {
         String[] arrDate = date.split(" ");
         String month = arrDate[0];
         String day = arrDate[1].trim();
         String year = arrDate[2];
-        WebElement month_name = driver.findElement(By.cssSelector(".calendar__month-name"));
-        String month_date = month.concat(year);
-        System.out.println("month date " + month_date);
-        if (month_name.getText().equals(month_date))
-            calendar.findElement(By.cssSelector("[data-value='" + day +"']")).click();
-        else {
-            //driver.findElement(By.cssSelector(".datepicker__arrow-wrap")).click();
-            selectDate(date);
+        WebElement month_name = calendar.findElement(By.cssSelector(".calendar__month-name"));
+        String month_date = month + " " + year;
+        if (month_name.getText().equals(month_date)) {
+            calendar.findElement(By.cssSelector("[data-value='" + day + "']")).click();
+        } else {
+            driver.findElement(By.cssSelector("[data-ref='calendar-btn-next-month']")).click();
+            selectDate(date, calendar);
         }
     }
 
+    public void selectNumberOfPassengers(int number_of_passengers, String passengers){
+        WebElement increment_button = driver.findElement(By.cssSelector("[data-ref='passengers-picker__children'] [data-ref='counter.counter__increment']"));;
+        if(passengers.equals("adults")){
+            increment_button = driver.findElement(By.cssSelector("[data-ref='passengers-picker__adults'] [data-ref='counter.counter__increment']"));
+        }
+        while (number_of_passengers > 0){
+            increment_button.click();
+            number_of_passengers--;
+        }
+    }
 
+    public void confirmNumberOfPassengers(){
+        driver.findElement(By.cssSelector(".passengers__confirm-button")).click();
+    }
+
+    public void selectTermOfUse(){
+        driver.findElement(By.cssSelector("[data-ref='terms-of-use__terms-checkbox'] ._container")).click();
+    }
+
+    public void clickToSearchFlights(){
+        searchCTA.click();
+    }
 
 
 

@@ -7,9 +7,11 @@ Feature: As a user I want to be able to create and edit a ticket reservation,
     And the user accepts the Cookie policy to continue navigating
     When the user chooses "<departure>" and "<destination>" to travel
     And the user selects "<depart>" and "<return>" dates
-
+    And the user chooses the number of "<adults>" and "<children>" passengers
+    And the user performs the Search
+    Then the user selects the value fare card
 
     Examples:
-    |departure | destination    | depart      | return          |
-    |Lisbon    | Paris Beauvais | June 6 2021 | October 30 2021 |
+    |departure | destination    | depart      | return          | adults | children |
+    |Lisbon    | Paris Beauvais | June 6 2021 | October 30 2021 | 2      | 1        |
 
