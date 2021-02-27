@@ -43,7 +43,7 @@ public class SearchTrip {
 
     @And("^the user selects \"([^\"]*)\" and \"([^\"]*)\" dates$")
     public void theUserSelectsAndDates(String depart_date, String return_date) {
-
+        homePage.enterDepartAndReturnDates(depart_date, return_date);
     }
 
     @After
