@@ -25,21 +25,25 @@ public class FlightFareDetails {
         this.driver = _driver;
         PageFactory.initElements(_driver, this);
     }
-    public void selectInboundFare(){
+    public void selectInboundFare() throws InterruptedException {
+        /**stopping the execution to give the animations time to finish, otherwise some elements will be
+         * un-clickable between transitions*/
+        Thread.sleep(1000);
         inboundFlightCard.click();
-        WebDriverWait wait_until_card_container_visible = new WebDriverWait(driver, 20);
-        wait_until_card_container_visible.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-ref='inbound'] .fare-card-container")));
+        Thread.sleep(1000);
         driver.findElement(By.cssSelector("[data-ref='inbound'] div[data-e2e='fare-card--standard'] button")).click();
     }
 
-    public void selectOutboundFare(){
+    public void selectOutboundFare() throws InterruptedException {
+        /**stopping the execution to give the animations time to finish, otherwise some elements will be
+         * un-clickable between transitions*/
+        Thread.sleep(1000);
         outboundFlightCard.click();
-        WebDriverWait wait_until_card_container_visible = new WebDriverWait(driver, 20);
-        wait_until_card_container_visible.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-ref='outbound'] .fare-card-container")));
+        Thread.sleep(1000);
         driver.findElement(By.cssSelector("[data-ref='outbound'] div[data-e2e='fare-card--standard'] button")).click();
     }
 
-    public void clickLoginLater(){
+       public void clickLoginLater(){
         WebDriverWait wait_until_card_container_visible = new WebDriverWait(driver, 20);
         wait_until_card_container_visible.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".login-touchpoint__expansion-bar")));
         driver.findElement(By.cssSelector(".login-touchpoint__expansion-bar")).click();

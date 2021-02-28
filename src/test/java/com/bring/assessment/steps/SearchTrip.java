@@ -70,7 +70,7 @@ public class SearchTrip {
     }
 
     @Then("^the user selects the value fare card$")
-    public void theUserSelectsTheValueFareCard() {
+    public void theUserSelectsTheValueFareCard() throws InterruptedException {
         fareDetails = new FlightFareDetails(driver);
         fareDetails.selectOutboundFare();
         fareDetails.selectInboundFare();
@@ -83,8 +83,6 @@ public class SearchTrip {
         List<Map<String, String>> maps = dataTable.asMaps(String.class, String.class);
         int cont = 0;
         for (Map<String, String> config : maps) {
-            System.out.println(config.get("name"));
-            System.out.println(config.get("lastname"));
             fareDetails.fillsOutPassengersData(config.get("name"),config.get("lastname"),config.get("title"), cont);
             cont ++;
         }
