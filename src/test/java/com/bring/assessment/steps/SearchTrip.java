@@ -26,6 +26,7 @@ public class SearchTrip {
     @Before
     public void setUp() {
         driver = new ChromeDriver();
+        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
     }
     @Given("^a user is at the ryanair homepage$")
@@ -57,12 +58,6 @@ public class SearchTrip {
         homePage.confirmNumberOfPassengers();
     }
 
-    @After
-    public void close(){
-        driver.close();
-    }
-
-
     @And("^the user performs the Search$")
     public void theUserClicksOnTheSearchCTA() {
         homePage.selectTermOfUse();
@@ -92,4 +87,10 @@ public class SearchTrip {
     public void theUserContinuesWithThePurchase() {
         fareDetails.clickToContinuePurchase();
     }
+
+    @After
+    public void close(){
+        driver.close();
+    }
+
 }
