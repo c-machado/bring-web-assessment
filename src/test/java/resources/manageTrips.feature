@@ -2,6 +2,9 @@
 Feature: As a user I want to be able to create and edit a ticket reservation,
   so, I can easily buy an airplane ticket
 
+#  Examples:
+#  |name | lastname  |
+#  |Sonia| Pereira    |
   Scenario Outline: Successfully search for a trip
     Given a user is at the ryanair homepage
     And the user accepts the Cookie policy to continue navigating
@@ -10,6 +13,12 @@ Feature: As a user I want to be able to create and edit a ticket reservation,
     And the user chooses the number of "<adults>" and "<children>" passengers
     And the user performs the Search
     Then the user selects the value fare card
+    And the user fills out the passengers data
+      |name  | lastname    |title|
+      |Sonia | Pereira     |Mrs  |
+      |Diogo | Bettencourt |Mr   |
+      |Inês  | Marçal      |     |
+    And the user continues with the purchase
 
     Examples:
     |departure | destination    | depart      | return          | adults | children |

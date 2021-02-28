@@ -72,7 +72,6 @@ public class HomePage {
     public WebElement getAirportByName(String _airportName){
         List<WebElement> airports = driver.findElements(By.xpath("//span[@data-ref='airport-item__name']"));
         for(WebElement airportElement: airports){
-            System.out.println("element "+airportElement.getText());
             if (airportElement.getText().equals(_airportName));
             {
                 return airportElement;
@@ -107,13 +106,14 @@ public class HomePage {
     }
 
     public void selectNumberOfPassengers(int number_of_passengers, String passengers){
-        WebElement increment_button = driver.findElement(By.cssSelector("[data-ref='passengers-picker__children'] [data-ref='counter.counter__increment']"));;
+        WebElement increment_button = driver.findElement(By.cssSelector("[data-ref='passengers-picker__children'] [data-ref='counter.counter__increment']"));
+        WebElement passenger_counter = driver.findElement(By.cssSelector("[data-ref='passengers-picker__children'] [data-ref='counter.counter__value']"));
         if(passengers.equals("adults")){
             increment_button = driver.findElement(By.cssSelector("[data-ref='passengers-picker__adults'] [data-ref='counter.counter__increment']"));
+            passenger_counter = driver.findElement(By.cssSelector("[data-ref='passengers-picker__adults'] [data-ref='counter.counter__value']"));
         }
-        while (number_of_passengers > 0){
+        while (number_of_passengers > Integer.parseInt(passenger_counter.getText())){
             increment_button.click();
-            number_of_passengers--;
         }
     }
 

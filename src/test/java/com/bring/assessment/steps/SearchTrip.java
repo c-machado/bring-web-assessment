@@ -2,6 +2,7 @@ package com.bring.assessment.steps;
 
 import com.bring.assessment.consts.Constants;
 import com.bring.assessment.pages.*;
+import cucumber.api.DataTable;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -12,6 +13,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class SearchTrip {
@@ -71,5 +74,24 @@ public class SearchTrip {
         fareDetails = new FlightFareDetails(driver);
         fareDetails.selectOutboundFare();
         fareDetails.selectInboundFare();
+        fareDetails.clickLoginLater();
+    }
+
+
+    @And("^the user fills out the passengers data$")
+    public void theUserFillsOutThePassengersData(DataTable dataTable) {
+        List<Map<String, String>> maps = dataTable.asMaps(String.class, String.class);
+        int cont = 0;
+        for (Map<String, String> config : maps) {
+            System.out.println(config.get("name"));
+            System.out.println(config.get("lastname"));
+            fareDetails.fillsOutPassengersData(config.get("name"),config.get("lastname"),config.get("title"), cont);
+            cont ++;
+        }
+    }
+
+    @And("^the user continues with the purchase$")
+    public void theUserContinuesWithThePurchase() {
+        fareDetails.clickToContinuePurchase();
     }
 }
